@@ -15,7 +15,7 @@ print(f'Part 1: {joltage_pt1}')
 joltage_pt2 = 0
 for d in data:
     numbers = list(map(int, list(d)))
-    numbers.append('foo')  # just a placeholder to allow index -1 to point at last number
+    numbers.append('foo')  # just a placeholder to allow index [:-1] to include last number
     joltage, start_index = '', 0
     for i in range(12):
         n = max(numbers[start_index:-12 + i])
