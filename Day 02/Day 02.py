@@ -5,7 +5,6 @@ file = 'input.txt'
 with open(file, encoding="utf8") as f:
     data = f.read().splitlines()
     data = data[0].split(',')
-    print(type(data), data)
 
 invalid_IDs_pt1 = 0
 for d in data:
