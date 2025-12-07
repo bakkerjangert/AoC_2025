@@ -14,9 +14,9 @@ ingredients = tuple(map(int, data[len(ranges) + 1:]))
 print(f'Part 1: {sum(check_ingredient(i) for i in ingredients)}')
 
 ranges.sort(key=lambda r: r[0])
-merged_ranges = []
-for a, b in ranges:
-    if not merged_ranges or merged_ranges[-1][1] < a - 1:
+merged_ranges = [ranges[0]]
+for a, b in ranges[1:]:
+    if merged_ranges[-1][1] < a - 1:
         # gap between ranges, add new range
         merged_ranges.append((a, b))
     else:
