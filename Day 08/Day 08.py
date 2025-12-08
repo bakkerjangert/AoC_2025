@@ -30,7 +30,7 @@ i = 0
 for b1, b2, dist in distances:
     i += 1
     if box_circuits[b1] == box_circuits[b2] == 0:
-        # print('New Circuit')
+        # print(f'New Circuit {new_circuit}')
         circuits[new_circuit].append(b1)
         circuits[new_circuit].append(b2)
         box_circuits[b1] = new_circuit
@@ -48,9 +48,9 @@ for b1, b2, dist in distances:
         circuits[box_circuits[b1]].append(b2)
         box_circuits[b2] = box_circuits[b1]
     else:
-        # print('\nMerging')
         c1, c2 = box_circuits[b1], box_circuits[b2]
-        circuits[box_circuits[b1]] += circuits[box_circuits[b2]]
+        # print(f'Merging circuit {c2} into circuit {c1}')
+        circuits[c1] += circuits[c2]
         for b in circuits[c2]:
             box_circuits[b] = c1
         del circuits[c2]
