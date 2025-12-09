@@ -116,7 +116,6 @@ for rectangle in areas:
             if l1.checkIntersection(l2):
                 valid_rectangle = False
     if valid_rectangle:
-        areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
         print(f'Part 2: {rectangle[2]}')
         break
 
