@@ -105,7 +105,7 @@ for i, (_l, l1, l_) in enumerate(zip([boundaries[-1]] + boundaries[:-1], boundar
                 move_hor = 'l' if l_.y1 < l_.y2 else 'r'
         move_vert = None
     else:
-        print('Error: No move direction!')
+        print('Error: No move direction!!')
 
 for rectangle in areas:
     x1, y1 = rectangle[0]
