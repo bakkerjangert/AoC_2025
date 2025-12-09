@@ -42,8 +42,9 @@ data = [list(map(int, r.split(','))) for r in data]
 areas = []
 for i, (x1, y1) in enumerate(data[:-1]):
     for x2, y2 in data[i + 1:]:
-        areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
-print(f'Part 1: {max(areas)}')
+        areas.append(((x1, y1), (x2, y2), (abs(x1 - x2) + 1) * (abs(y1 - y2) + 1)))
+areas.sort(key=lambda x: x[2], reverse=True)
+print(f'Part 1: {areas[0][2]}')
 
 boundaries = list()
 for (x1, y1), (x2, y2) in zip(data, data[1:] + [data[0],]):
@@ -106,17 +107,33 @@ for i, (_l, l1, l_) in enumerate(zip([boundaries[-1]] + boundaries[:-1], boundar
     else:
         print('Error: No move direction!')
 
-areas = []
-for i, (x1, y1) in enumerate(data[:-1]):
-    for x2, y2 in data[i + 1:]:
-        valid_rectangle = True
-        for l1 in (StraightLine(x1, y1, x2, y1), StraightLine(x1, y1, x1, y2), StraightLine(x2, y1, x2, y2), StraightLine(x1, y2, x2, y2)):
-            for l2 in boundaries:
-                if l1.checkIntersection(l2):
-                    valid_rectangle = False
-        if valid_rectangle:
-            areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
-print(f'Part 2: {max(areas)}')
+for rectangle in areas:
+    x1, y1 = rectangle[0]
+    x2, y2 = rectangle[1]
+    valid_rectangle = True
+    for l1 in (StraightLine(x1, y1, x2, y1), StraightLine(x1, y1, x1, y2), StraightLine(x2, y1, x2, y2), StraightLine(x1, y2, x2, y2)):
+        for l2 in boundaries:
+            if l1.checkIntersection(l2):
+                valid_rectangle = False
+    if valid_rectangle:
+        areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
+        print(f'Part 2: {rectangle[2]}')
+        break
+
+
+
+# areas = []
+# for i, (x1, y1) in enumerate(data[:-1]):
+#     # print(f'Checking rectangle from ({x1},{y1}) to ({x2},{y2}); enty {i} of {len(data) - 1}')
+#     for x2, y2 in data[i + 1:]:
+#         valid_rectangle = True
+#         for l1 in (StraightLine(x1, y1, x2, y1), StraightLine(x1, y1, x1, y2), StraightLine(x2, y1, x2, y2), StraightLine(x1, y2, x2, y2)):
+#             for l2 in boundaries:
+#                 if l1.checkIntersection(l2):
+#                     valid_rectangle = False
+#         if valid_rectangle:
+#             areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
+# print(f'Part 2: {max(areas)}')
 
 
 # Plot shifted Boundary
