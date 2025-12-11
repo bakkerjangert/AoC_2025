@@ -51,20 +51,16 @@ for (x1, y1), (x2, y2) in zip(data, data[1:] + [data[0],]):
     boundaries.append(StraightLine(x1, y1, x2, y2))
 original_boundaries = deepcopy(boundaries)
 
-# Move initial boundary outside by 0.5
-# To determine starting point, see plot below (red dots is first line, since last line is not plotted direction is known)
-# Plot initial Boundary
-# x = [b.x1 for b in boundaries]
-# y = [b.y1 for b in boundaries]
-# plt.plot(x, y, color='blue')
-# plt.scatter(x[:2], y[:2], color='red')
-# # plt.show()
-
-move_hor, move_vert = 'r', None # None, r(ight), l(eft); None, u(p), d(own) --> USER INPUT FROM INTERPRETATION GRAPH!
-# move_hor, move_vert = None, 'd' # None, r(ight), l(eft); None, u(p), d(own) --> USER INPUT FROM INTERPRETATION GRAPH!
+# Move initial boundary outside by 0.5 to prevent unwanted intersections
+max_x = max(l.x1 for l in boundaries)
+most_right_vertical = [l for l in boundaries if l.vert and l.x1 == max_x][0]
+i = boundaries.index(most_right_vertical)
+move_hor, move_vert = 'r', None # None, r(ight), l(eft); None, u(p), d(own)
 
 delta = 0.5
-for i, (_l, l1, l_) in enumerate(zip([boundaries[-1]] + boundaries[:-1], boundaries, boundaries[1:] + [boundaries[0]])):
+# for i, (_l, l1, l_) in enumerate(zip([boundaries[-1]] + boundaries[:-1], boundaries, boundaries[1:] + [boundaries[0]])):
+for i, (_l, l1, l_) in enumerate(
+            zip(boundaries[i-1:] + boundaries[:i-1], boundaries[i:] + boundaries[:i], boundaries[i+1:] + boundaries[:i+1])):
     if move_hor:
         # print(_l == boundaries[i - 1], l1 == boundaries[i], l_ == boundaries[i + 1])
         # Adjust boundaries
@@ -107,37 +103,37 @@ for i, (_l, l1, l_) in enumerate(zip([boundaries[-1]] + boundaries[:-1], boundar
     else:
         print('Error: No move direction!!')
 
+# sort shifted boundaries on length to improve speed (longest line has highset chang to be crossed)
+sorted_boundaries = sorted(boundaries, key=lambda x: abs(x.x1 - x.x2) + abs(x.y1 - x.y2))
+# boundaries.sort(key=lambda x: abs(x.x1 - x.x2) + abs(x.y1 - x.y2), reverse=True)
+
 for rectangle in areas:
     x1, y1 = rectangle[0]
     x2, y2 = rectangle[1]
     valid_rectangle = True
     for l1 in (StraightLine(x1, y1, x2, y1), StraightLine(x1, y1, x1, y2), StraightLine(x2, y1, x2, y2), StraightLine(x1, y2, x2, y2)):
-        for l2 in boundaries:
+        for l2 in sorted_boundaries:
             if l1.checkIntersection(l2):
                 valid_rectangle = False
+                break
+        if not valid_rectangle:
+            break
     if valid_rectangle:
         print(f'Part 2: {rectangle[2]}')
+        r_pt2 = rectangle
         break
 
 
-
-# areas = []
-# for i, (x1, y1) in enumerate(data[:-1]):
-#     # print(f'Checking rectangle from ({x1},{y1}) to ({x2},{y2}); enty {i} of {len(data) - 1}')
-#     for x2, y2 in data[i + 1:]:
-#         valid_rectangle = True
-#         for l1 in (StraightLine(x1, y1, x2, y1), StraightLine(x1, y1, x1, y2), StraightLine(x2, y1, x2, y2), StraightLine(x1, y2, x2, y2)):
-#             for l2 in boundaries:
-#                 if l1.checkIntersection(l2):
-#                     valid_rectangle = False
-#         if valid_rectangle:
-#             areas.append((abs(x1 - x2) + 1) * (abs(y1 - y2) + 1))
-# print(f'Part 2: {max(areas)}')
-
-
+# Plot initial Boundary
+x = [b.x1 for b in original_boundaries + [original_boundaries[0]]]
+y = [b.y1 for b in original_boundaries + [original_boundaries[0]]]
+plt.plot(x, y, color='blue')
 # Plot shifted Boundary
-# x = [l.x1 for l in boundaries + [boundaries[0]]]
-# y = [l.y1 for l in boundaries + [boundaries[0]]]
-# plt.plot(x, y, color='red')
-# plt.axis('equal')
-# plt.show()
+x = [l.x1 for l in boundaries + [boundaries[0]]]
+y = [l.y1 for l in boundaries + [boundaries[0]]]
+plt.plot(x, y, color='red')
+plt.axis('equal')
+x_rct = (r_pt2[0][0], r_pt2[1][0])
+y_rct = (r_pt2[0][1], r_pt2[1][1])
+plt.fill_between(x_rct, y_rct[0], y_rct[1], color='green')
+plt.show()
